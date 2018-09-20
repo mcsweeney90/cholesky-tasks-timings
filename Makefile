@@ -5,10 +5,8 @@ LIBS      = -L$(MKLROOT)/lib/intel64 -lmkl_intel_lp64 -lmkl_sequential -lmkl_cor
 INC       = -I$(MKLROOT)/include
 
 
-all: timing timing_dgemm timing_dpotrf timing_dsyrk timing_dtrsm
+all:  timing_dgemm timing_dpotrf timing_dsyrk timing_dtrsm
 
-timing: timing.c
-	$(CC) $(CFLAGS) timing.c $(INC) $(LIBS) -o $@
 
 timing_dpotrf: timing_dpotrf.c
 	$(CC) $(CFLAGS) timing_dpotrf.c $(INC) $(LIBS) -o $@
@@ -23,4 +21,4 @@ timing_dtrsm: timing_dtrsm.c
 	$(CC) $(CFLAGS) timing_dtrsm.c $(INC) $(LIBS) -o $@
 
 clean: 
-	rm timing timing_dgemm timing_dpotrf timing_dsyrk timing_dtrsm *.o *~
+	rm  timing_dgemm timing_dpotrf timing_dsyrk timing_dtrsm *.o *~
