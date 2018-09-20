@@ -1,0 +1,36 @@
+#!/bin/bash
+#$ -S /bin/bash
+#$ -cwd           # Job will run in the current directory (where you ran qsub)
+#$ -e ~/scratch/cholesky-timings/error_logs
+#$ -o ~/scratch/cholesky-timings/output_files	
+#$ -V             # Inherit current environment (e.g., any loaded modulefiles)
+                  # ... important so that commands can be found when jobs run.
+#$ -l sandybridge            # What kind of processor to run on (sandybridge, haswell, ivybridge, broadwell, westmere)
+# Now the commands the job is to run:
+# NSLOTS is automatically set to the number specified on the -pe line.
+# OMP_NUM_THREADS is used by the MKL to determine how many cores to use.
+
+export OMP_NUM_THREADS=$NSLOTS
+
+echo "make"
+make
+
+echo "./timing_dgemm"
+./timing_dgemm
+cp dgemm_timing.csv ~/scratch/cholesky-timings/timing_data/DGEMMsandybridgeCores1Threads1Iterations1001.csv
+rm dgemm_timing.csv
+	
+echo "./timing_dtrsm"
+./timing_dtrsm
+cp dtrsm_timing.csv ~/scratch/cholesky-timings/timing_data/DTRSMsandybridgeCores1Threads1Iterations1001.csv
+rm dtrsm_timing.csv
+
+echo "./timing_dsyrk"
+./timing_dsyrk
+cp dsyrk_timing.csv ~/scratch/cholesky-timings/timing_data/DSYRKsandybridgeCores1Threads1Iterations1001.csv
+rm dsyrk_timing.csv
+
+echo "./timing_dpotrf"
+./timing_dpotrf
+cp dpotrf_timing.csv ~/scratch/cholesky-timings/timing_data/DPOTRFsandybridgeCores1Threads1Iterations1001.csv
+rm dpotrf_timing.csv
