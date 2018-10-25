@@ -1,8 +1,6 @@
 /*
-Code for timing the constituent BLAS routines used in the block Cholesky
-factorization on randomly generated matrices of various sizes.
- */
-
+Timing DGEMM on randomly generated matrices of various sizes.
+*/
 
 
 #include<stdio.h>
@@ -67,7 +65,13 @@ int main (int argc, char * argv[]) {
         for (int iter= 0; iter < ITERMAX; iter++){
         
             int n = tile_size;
+	    int m = tile_size;
+	    int k = tile_size; 
             int lda = tile_size;
+	    int ldb = tile_size;
+	    int ldc = tile_size;
+	    double alpha = 1.0;
+	    double beta = 1.0;
             // Memory allocation
             double *A = (double*) malloc(n*lda*sizeof(double));
             LAPACKE_dlarnv(1, seed, (size_t)n*lda, A);
@@ -86,28 +90,30 @@ int main (int argc, char * argv[]) {
             }
 	    
 	    double *B = (double*) malloc(n*lda*sizeof(double));
-            LAPACKE_dlarnv(1, seed, (size_t)n*lda, B);
+            LAPACKE_dlarnv(1, seed, (size_t)n*ldb, B);
 
-	    double *X = (double*) malloc(n*lda*sizeof(double));
-            LAPACKE_dlarnv(1, seed, (size_t)n*lda, X);
+	    double *C = (double*) malloc(n*lda*sizeof(double));
+            LAPACKE_dlarnv(1, seed, (size_t)n*ldc, C);
             
             // flush the cache
-            mkl_set_num_threads(8);  // use 8 MKL threads 
+            //mkl_set_num_threads(8);  // use 8 MKL threads 
             flush_cache();
             
             //Perform Cholesky factorization
-            mkl_set_num_threads(1); // use 1 MKL thread. Ask Mawussi about this - what about the number of cores specified? How many threads can we use per core? 
+            //mkl_set_num_threads(1); // use 1 MKL thread
             gettime();
             start = time;	    	    
 
 	    // DGEMM
-	    cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, lda, n, n, 1.0, A, lda, B, lda, 1.0, X, lda);
+	    cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc);
 	    
             gettime();
             stop = time;
             time = stop-start;
             fprintf(filePointer, "%d,%d,%.2e\n", n, iter, stop-start);
             free(A); 
+	    free(B);
+	    free(C);
         }
     }
     fclose(filePointer);

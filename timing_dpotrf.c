@@ -1,9 +1,6 @@
 /*
-Code for timing the constituent BLAS routines used in the block Cholesky
-factorization on randomly generated matrices of various sizes.
- */
-
-
+Timing DPOTRF on randomly generated matrices of various sizes.
+*/
 
 #include<stdio.h>
 #include<stdlib.h>
@@ -83,27 +80,19 @@ int main (int argc, char * argv[]) {
                 for (int j = 0; j < i; j++) {
                     A(j, i) = A(i, j);
                 }
-            }
-	    
-	    double *B = (double*) malloc(n*lda*sizeof(double));
-            LAPACKE_dlarnv(1, seed, (size_t)n*lda, B);
-
-	    double *X = (double*) malloc(n*lda*sizeof(double));
-            LAPACKE_dlarnv(1, seed, (size_t)n*lda, X);
+            }	    
             
             // flush the cache
-            mkl_set_num_threads(8);  // use 8 MKL threads 
+            //mkl_set_num_threads(8);  // use 8 MKL threads 
             flush_cache();
             
             //Perform Cholesky factorization
-            mkl_set_num_threads(1); // use 1 MKL thread. Ask Mawussi about this - what about the number of cores specified? How many threads can we use per core? 
+            //mkl_set_num_threads(1); // use 1 MKL thread. 
             gettime();
             start = time;
 	    
 	    // DPTROF
-            LAPACKE_dpotrf(LAPACK_COL_MAJOR,
-                                         'L', n,
-                                         A, lda);
+            LAPACKE_dpotrf(LAPACK_COL_MAJOR,'L', n, A, lda);
 	     
             gettime();
             stop = time;

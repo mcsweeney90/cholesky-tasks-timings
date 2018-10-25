@@ -1,9 +1,6 @@
 /*
-Code for timing the constituent BLAS routines used in the block Cholesky
-factorization on randomly generated matrices of various sizes.
- */
-
-
+Timing DSYRK on randomly generated matrices of various sizes.
+*/
 
 #include<stdio.h>
 #include<stdlib.h>
@@ -68,6 +65,9 @@ int main (int argc, char * argv[]) {
         
             int n = tile_size;
             int lda = tile_size;
+	    int ldb = tile_size;
+	    double alpha = 1.0;
+	    double beta = 1.0;
             // Memory allocation
             double *A = (double*) malloc(n*lda*sizeof(double));
             LAPACKE_dlarnv(1, seed, (size_t)n*lda, A);
@@ -87,29 +87,25 @@ int main (int argc, char * argv[]) {
 	    
 	    double *B = (double*) malloc(n*lda*sizeof(double));
             LAPACKE_dlarnv(1, seed, (size_t)n*lda, B);
-
-	    double *X = (double*) malloc(n*lda*sizeof(double));
-            LAPACKE_dlarnv(1, seed, (size_t)n*lda, X);
             
             // flush the cache
-            mkl_set_num_threads(8);  // use 8 MKL threads 
+            //mkl_set_num_threads(8);  // use 8 MKL threads 
             flush_cache();
             
             //Perform Cholesky factorization
-            mkl_set_num_threads(1); // use 1 MKL thread. Ask Mawussi about this - what about the number of cores specified? How many threads can we use per core? 
+            //mkl_set_num_threads(1); // use 1 MKL thread.
             gettime();
-            start = time;
-	    
+            start = time;	    
 	    
 	    // DSYRK
-	    cblas_dsyrk(CblasColMajor, CblasLower, CblasNoTrans , n, lda, 1.0, A, lda, 1.0, X, lda);
-
+	    cblas_dsyrk(CblasColMajor, CblasLower, CblasNoTrans, n, lda, alpha, A, lda, beta, B, ldb);
 	    
             gettime();
             stop = time;
             time = stop-start;
             fprintf(filePointer, "%d,%d,%.2e\n", n, iter, stop-start);
             free(A); 
+	    free(B);
         }
     }
     fclose(filePointer);
