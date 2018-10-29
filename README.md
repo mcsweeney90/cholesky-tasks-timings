@@ -8,4 +8,4 @@ Makefile : Compile all of the above C files.
 
 cholesky-timings.jobscript : Jobscript for the University of Manchester Computational Shared Facility (CSF) to compile everything, run the executables, and save the generated data files.
 
-data-Broadwell : Timing data for each of the four BLAS routines on Broadwell architecture processor (gathered by Mawussi Zounon).
+data_Broadwell : Timing data for each of the four BLAS routines on Broadwell architecture processor (provided by Mawussi Zounon).
