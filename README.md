@@ -1,11 +1,13 @@
 # cholesky-tasks-timings
 
-Codes for timing the four BLAS/LAPACK kernels used in block Cholesky factorization. 
+This repository contains codes for timing the four BLAS/LAPACK kernels used in block Cholesky factorization. These timings were used to build a realistic example which was used throughout my PhD research.  
 
-timing_dgemm.c, timing_dpotrf.c, timing_dsyrk.c, timing_dtrsm.c : Codes to time the specified BLAS routines for randomly generated matrices of various sizes. 
+## Navigation
 
-Makefile : Compile all the above C files.
+`timing_dgemm.c`, `timing_dpotrf.c`, `timing_dsyrk.c`, `timing_dtrsm.c` : Codes to time the specified BLAS routines for randomly generated matrices of various sizes. 
 
-cholesky-timings.jobscript : Jobscript for the University of Manchester Computational Shared Facility (CSF) to compile everything, run the executables, and save the generated data files.
+`Makefile` : Compile all the above C files.
 
-data_Broadwell : Timing data for each of the four BLAS routines on Broadwell architecture (provided by Mawussi Zounon).
+`cholesky-timings.jobscript` : Script for the University of Manchester Computational Shared Facility (CSF) to compile everything, run the executables, and save the generated data files.
+
+`data_Broadwell` : Timing data for each of the four BLAS routines on Broadwell architecture (provided by Mawussi Zounon).
